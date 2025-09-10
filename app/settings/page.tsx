@@ -198,7 +198,7 @@ export default function SettingsPage() {
               id="email-notifications"
               type="email"
               placeholder="notification@email.com"
-              defaultValue="sarah.johnson@university.edu"
+              defaultValue="235uit012@gbu.ac.in"
             />
           </div>
         </CardContent>
