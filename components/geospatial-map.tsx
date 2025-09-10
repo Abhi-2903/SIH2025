@@ -312,7 +312,7 @@ export function GeospatialMap() {
           </CardContent>
         </Card>
 
-        {/* Interactive Map */}
+        {/* Interactive Satellite Map */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -320,153 +320,193 @@ export function GeospatialMap() {
               New York City - Heavy Metal Pollution Monitoring Sites
             </CardTitle>
             <CardDescription>
-              Click on markers to view detailed information. Marker size indicates pollution level.
+              Satellite view with monitoring sites. Click on markers to view detailed information.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="relative bg-muted/20 rounded-lg overflow-hidden">
               <svg width="100%" height="600" viewBox="0 0 800 600" className="border border-border rounded-lg">
                 <defs>
-                  <pattern id="water" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <rect width="20" height="20" fill="#3b82f6" opacity="0.1" />
-                    <path d="M0,10 Q5,5 10,10 T20,10" stroke="#3b82f6" strokeWidth="0.5" fill="none" opacity="0.3" />
+                  <radialGradient id="urbanGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#e5e7eb" />
+                    <stop offset="100%" stopColor="#d1d5db" />
+                  </radialGradient>
+
+                  <pattern id="satelliteWater" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <rect width="30" height="30" fill="#1e40af" />
+                    <path d="M0,15 Q7.5,10 15,15 T30,15" stroke="#3b82f6" strokeWidth="1" fill="none" opacity="0.6" />
+                    <path d="M0,20 Q7.5,25 15,20 T30,20" stroke="#60a5fa" strokeWidth="0.5" fill="none" opacity="0.4" />
                   </pattern>
-                  <pattern id="park" width="15" height="15" patternUnits="userSpaceOnUse">
-                    <rect width="15" height="15" fill="#22c55e" opacity="0.1" />
-                    <circle cx="7.5" cy="7.5" r="2" fill="#22c55e" opacity="0.2" />
+
+                  <pattern id="satellitePark" width="25" height="25" patternUnits="userSpaceOnUse">
+                    <rect width="25" height="25" fill="#166534" />
+                    <circle cx="8" cy="8" r="3" fill="#22c55e" opacity="0.7" />
+                    <circle cx="17" cy="17" r="2" fill="#16a34a" opacity="0.8" />
+                    <path d="M5,20 Q12,15 20,20" stroke="#22c55e" strokeWidth="1" fill="none" opacity="0.5" />
                   </pattern>
+
+                  <pattern id="urbanArea" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect width="20" height="20" fill="#f3f4f6" />
+                    <rect x="2" y="2" width="6" height="8" fill="#9ca3af" opacity="0.6" />
+                    <rect x="12" y="5" width="4" height="6" fill="#6b7280" opacity="0.7" />
+                    <rect x="6" y="12" width="8" height="4" fill="#9ca3af" opacity="0.5" />
+                  </pattern>
+
+                  <pattern id="industrial" width="15" height="15" patternUnits="userSpaceOnUse">
+                    <rect width="15" height="15" fill="#374151" />
+                    <rect x="2" y="2" width="4" height="6" fill="#6b7280" />
+                    <rect x="8" y="4" width="3" height="8" fill="#4b5563" />
+                    <circle cx="12" cy="3" r="1" fill="#9ca3af" />
+                  </pattern>
+
+                  <filter id="satelliteShadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="2" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.3)" />
+                  </filter>
                 </defs>
 
-                {/* Base map background */}
-                <rect width="100%" height="100%" fill="#f8fafc" stroke="#e2e8f0" strokeWidth="1" />
+                <rect width="100%" height="100%" fill="url(#urbanGradient)" />
 
-                {/* Water bodies - Hudson River, East River */}
+                {/* Terrain elevation shadows */}
+                <ellipse cx="400" cy="300" rx="350" ry="250" fill="rgba(0,0,0,0.05)" />
+                <ellipse cx="200" cy="200" rx="150" ry="100" fill="rgba(0,0,0,0.03)" />
+
+                {/* Water bodies - Hudson River (realistic shape) */}
                 <path
-                  d="M0,200 Q100,180 150,200 L150,400 Q100,420 0,400 Z"
-                  fill="url(#water)"
-                  stroke="#3b82f6"
-                  strokeWidth="1"
-                  opacity="0.6"
-                />
-                <path
-                  d="M650,150 Q700,130 750,150 L750,450 Q700,470 650,450 Z"
-                  fill="url(#water)"
-                  stroke="#3b82f6"
-                  strokeWidth="1"
-                  opacity="0.6"
-                />
-                <path
-                  d="M200,500 Q400,480 600,500 L600,550 Q400,570 200,550 Z"
-                  fill="url(#water)"
-                  stroke="#3b82f6"
-                  strokeWidth="1"
-                  opacity="0.6"
+                  d="M0,180 Q50,160 80,180 L85,200 Q90,220 95,240 L100,280 Q95,320 90,360 L85,400 Q80,420 50,440 Q20,420 0,400 Z"
+                  fill="url(#satelliteWater)"
+                  filter="url(#satelliteShadow)"
                 />
 
-                {/* Parks - Central Park, Prospect Park */}
-                <ellipse
-                  cx="400"
-                  cy="200"
-                  rx="80"
-                  ry="120"
-                  fill="url(#park)"
-                  stroke="#22c55e"
-                  strokeWidth="1"
-                  opacity="0.7"
-                />
-                <ellipse
-                  cx="350"
-                  cy="450"
-                  rx="40"
-                  ry="60"
-                  fill="url(#park)"
-                  stroke="#22c55e"
-                  strokeWidth="1"
-                  opacity="0.7"
-                />
-
-                {/* Borough boundaries */}
+                {/* East River */}
                 <path
-                  d="M200,100 L600,100 L600,500 L200,500 Z"
-                  fill="none"
-                  stroke="#94a3b8"
-                  strokeWidth="1"
-                  strokeDasharray="5,5"
-                  opacity="0.5"
+                  d="M680,120 Q720,100 750,120 L760,140 Q765,180 760,220 L755,280 Q750,340 745,380 L740,420 Q720,440 680,420 L675,380 Q680,340 685,300 L690,260 Q685,220 680,180 Z"
+                  fill="url(#satelliteWater)"
+                  filter="url(#satelliteShadow)"
                 />
-                <path d="M300,300 L500,300" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3,3" opacity="0.4" />
-                <path d="M250,200 L550,400" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3,3" opacity="0.4" />
 
-                {/* Street grid */}
-                {Array.from({ length: 15 }, (_, i) => (
-                  <g key={`street-${i}`}>
+                {/* New York Harbor */}
+                <path
+                  d="M150,480 Q300,460 450,480 Q600,500 650,520 L650,570 Q500,590 350,570 Q200,550 150,530 Z"
+                  fill="url(#satelliteWater)"
+                  filter="url(#satelliteShadow)"
+                />
+
+                {/* Central Park (realistic rectangular shape) */}
+                <rect
+                  x="320"
+                  y="160"
+                  width="160"
+                  height="280"
+                  fill="url(#satellitePark)"
+                  rx="8"
+                  filter="url(#satelliteShadow)"
+                />
+
+                {/* Prospect Park */}
+                <ellipse cx="350" cy="470" rx="45" ry="65" fill="url(#satellitePark)" filter="url(#satelliteShadow)" />
+
+                {/* Van Cortlandt Park (Bronx) */}
+                <ellipse cx="420" cy="80" rx="35" ry="25" fill="url(#satellitePark)" filter="url(#satelliteShadow)" />
+
+                {/* Manhattan urban areas */}
+                <rect x="200" y="150" width="120" height="350" fill="url(#urbanArea)" opacity="0.8" />
+                <rect x="480" y="150" width="200" height="350" fill="url(#urbanArea)" opacity="0.8" />
+
+                {/* Brooklyn industrial zones */}
+                <rect x="300" y="520" width="180" height="60" fill="url(#industrial)" opacity="0.9" />
+
+                {/* Queens residential areas */}
+                <rect x="500" y="200" width="150" height="200" fill="url(#urbanArea)" opacity="0.7" />
+
+                {/* Major highways and bridges */}
+                <path d="M100,300 Q400,290 700,300" stroke="#4b5563" strokeWidth="4" opacity="0.8" />
+                <path d="M400,100 L400,500" stroke="#4b5563" strokeWidth="3" opacity="0.7" />
+                <path d="M200,200 L600,400" stroke="#6b7280" strokeWidth="2" opacity="0.6" />
+
+                {/* Brooklyn Bridge */}
+                <line x1="320" y1="480" x2="480" y2="480" stroke="#374151" strokeWidth="3" opacity="0.9" />
+                <circle cx="350" cy="480" r="3" fill="#6b7280" />
+                <circle cx="450" cy="480" r="3" fill="#6b7280" />
+
+                {/* Manhattan Bridge */}
+                <line x1="340" y1="500" x2="500" y2="500" stroke="#374151" strokeWidth="2" opacity="0.8" />
+
+                {/* Street grid (more realistic satellite view) */}
+                {Array.from({ length: 12 }, (_, i) => (
+                  <g key={`street-v-${i}`}>
                     <line
-                      x1={200 + i * 30}
-                      y1="100"
-                      x2={200 + i * 30}
+                      x1={220 + i * 25}
+                      y1="150"
+                      x2={220 + i * 25}
                       y2="500"
-                      stroke="#e2e8f0"
-                      strokeWidth="0.5"
-                      opacity="0.6"
+                      stroke="#9ca3af"
+                      strokeWidth="0.8"
+                      opacity="0.4"
                     />
+                  </g>
+                ))}
+                {Array.from({ length: 16 }, (_, i) => (
+                  <g key={`street-h-${i}`}>
                     <line
                       x1="200"
-                      y1={120 + i * 25}
-                      x2="600"
-                      y2={120 + i * 25}
-                      stroke="#e2e8f0"
-                      strokeWidth="0.5"
-                      opacity="0.6"
+                      y1={160 + i * 22}
+                      x2="680"
+                      y2={160 + i * 22}
+                      stroke="#9ca3af"
+                      strokeWidth="0.6"
+                      opacity="0.3"
                     />
                   </g>
                 ))}
 
-                {/* Major landmarks */}
-                <rect
-                  x="380"
-                  y="280"
-                  width="40"
-                  height="40"
-                  fill="#fbbf24"
-                  stroke="#f59e0b"
-                  strokeWidth="1"
-                  opacity="0.8"
-                  rx="2"
-                />
-                <text x="400" y="305" textAnchor="middle" className="text-xs fill-amber-800 font-medium">
-                  Times Sq
-                </text>
+                {/* Major landmarks with satellite-style appearance */}
+                <g filter="url(#satelliteShadow)">
+                  {/* Times Square area */}
+                  <rect x="375" y="275" width="50" height="50" fill="#fbbf24" opacity="0.9" rx="3" />
+                  <rect x="380" y="280" width="15" height="20" fill="#f59e0b" />
+                  <rect x="400" y="285" width="12" height="15" fill="#d97706" />
+                  <text x="400" y="340" textAnchor="middle" className="text-xs fill-amber-700 font-bold">
+                    Times Square
+                  </text>
 
-                <rect
-                  x="320"
-                  y="180"
-                  width="30"
-                  height="30"
-                  fill="#8b5cf6"
-                  stroke="#7c3aed"
-                  strokeWidth="1"
-                  opacity="0.8"
-                  rx="2"
-                />
-                <text x="335" y="200" textAnchor="middle" className="text-xs fill-purple-800 font-medium">
-                  Central
-                </text>
+                  {/* Financial District */}
+                  <rect x="280" y="450" width="40" height="40" fill="#64748b" opacity="0.9" rx="2" />
+                  <rect x="285" y="455" width="8" height="25" fill="#475569" />
+                  <rect x="295" y="460" width="6" height="20" fill="#334155" />
+                  <rect x="305" y="465" width="10" height="15" fill="#475569" />
+                  <text x="300" y="505" textAnchor="middle" className="text-xs fill-slate-700 font-bold">
+                    Financial District
+                  </text>
 
-                {/* Borough labels */}
-                <text x="300" y="150" textAnchor="middle" className="text-sm fill-slate-600 font-semibold opacity-70">
+                  {/* Empire State Building area */}
+                  <rect x="360" y="320" width="8" height="25" fill="#6366f1" opacity="0.9" />
+                  <circle cx="364" cy="315" r="2" fill="#4f46e5" />
+                </g>
+
+                {/* Borough boundaries (subtle satellite-style) */}
+                <path
+                  d="M200,150 L680,150 L680,520 L200,520 Z"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.3)"
+                  strokeWidth="1"
+                  strokeDasharray="8,4"
+                />
+
+                {/* Borough labels with satellite styling */}
+                <text x="280" y="140" textAnchor="middle" className="text-sm fill-white font-bold drop-shadow-lg">
                   MANHATTAN
                 </text>
-                <text x="500" y="180" textAnchor="middle" className="text-sm fill-slate-600 font-semibold opacity-70">
+                <text x="580" y="140" textAnchor="middle" className="text-sm fill-white font-bold drop-shadow-lg">
                   QUEENS
                 </text>
-                <text x="350" y="480" textAnchor="middle" className="text-sm fill-slate-600 font-semibold opacity-70">
+                <text x="380" y="550" textAnchor="middle" className="text-sm fill-white font-bold drop-shadow-lg">
                   BROOKLYN
                 </text>
-                <text x="450" y="120" textAnchor="middle" className="text-sm fill-slate-600 font-semibold opacity-70">
+                <text x="450" y="100" textAnchor="middle" className="text-sm fill-white font-bold drop-shadow-lg">
                   BRONX
                 </text>
 
-                {/* Map markers */}
+                {/* Map markers with enhanced satellite visibility */}
                 {filteredData.map((site) => {
                   const position = getMapPosition(site.latitude, site.longitude)
                   const isSelected = selectedSite?.id === site.id
@@ -478,49 +518,51 @@ export function GeospatialMap() {
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r={site.hmpi <= 100 ? 12 : site.hmpi <= 200 ? 14 : site.hmpi <= 300 ? 16 : 18}
+                          r={site.hmpi <= 100 ? 15 : site.hmpi <= 200 ? 17 : site.hmpi <= 300 ? 19 : 21}
                           fill="none"
                           stroke="#0ea5e9"
-                          strokeWidth="2"
-                          opacity="0.6"
+                          strokeWidth="3"
+                          opacity="0.8"
                           className="animate-pulse"
                         />
                       )}
-                      {/* Marker shadow */}
+                      {/* Enhanced marker shadow for satellite view */}
                       <circle
-                        cx={position.x + 1}
-                        cy={position.y + 1}
-                        r={site.hmpi <= 100 ? 8 : site.hmpi <= 200 ? 10 : site.hmpi <= 300 ? 12 : 14}
-                        fill="rgba(0,0,0,0.2)"
+                        cx={position.x + 2}
+                        cy={position.y + 2}
+                        r={site.hmpi <= 100 ? 10 : site.hmpi <= 200 ? 12 : site.hmpi <= 300 ? 14 : 16}
+                        fill="rgba(0,0,0,0.4)"
                       />
-                      {/* Main marker */}
+                      {/* Main marker with satellite-style appearance */}
                       <circle
                         cx={position.x}
                         cy={position.y}
-                        r={site.hmpi <= 100 ? 8 : site.hmpi <= 200 ? 10 : site.hmpi <= 300 ? 12 : 14}
+                        r={site.hmpi <= 100 ? 10 : site.hmpi <= 200 ? 12 : site.hmpi <= 300 ? 14 : 16}
                         className={cn(
                           "cursor-pointer transition-all duration-200 stroke-2 hover:stroke-4",
                           getRiskColor(site.riskLevel),
-                          isSelected ? "stroke-sky-500 stroke-4" : "stroke-white",
+                          isSelected ? "stroke-sky-400 stroke-4" : "stroke-white",
                         )}
                         onClick={() => setSelectedSite(site)}
+                        filter="url(#satelliteShadow)"
                       />
                       {/* Risk icon */}
                       <foreignObject
-                        x={position.x - 6}
-                        y={position.y - 6}
-                        width="12"
-                        height="12"
+                        x={position.x - 8}
+                        y={position.y - 8}
+                        width="16"
+                        height="16"
                         className="pointer-events-none"
                       >
                         <div className="flex items-center justify-center h-full">{getRiskIcon(site.riskLevel)}</div>
                       </foreignObject>
-                      {/* Site label */}
+                      {/* Site label with better visibility on satellite imagery */}
                       <text
                         x={position.x}
-                        y={position.y + (site.hmpi <= 100 ? 20 : site.hmpi <= 200 ? 22 : site.hmpi <= 300 ? 24 : 26)}
+                        y={position.y + (site.hmpi <= 100 ? 24 : site.hmpi <= 200 ? 26 : site.hmpi <= 300 ? 28 : 30)}
                         textAnchor="middle"
-                        className="text-xs fill-foreground font-medium drop-shadow-sm"
+                        className="text-xs fill-white font-bold drop-shadow-lg"
+                        style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}
                       >
                         {site.id}
                       </text>
@@ -529,29 +571,33 @@ export function GeospatialMap() {
                 })}
               </svg>
 
-              {/* Enhanced Legend */}
-              <div className="absolute top-4 right-4 bg-background/95 backdrop-blur border border-border rounded-lg p-3 space-y-3 shadow-lg">
-                <div className="text-sm font-semibold">Risk Levels</div>
+              {/* Enhanced Legend for satellite view */}
+              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur border border-gray-600 rounded-lg p-3 space-y-3 shadow-xl text-white">
+                <div className="text-sm font-semibold text-white">Risk Levels</div>
                 {["Low", "Moderate", "High", "Very High"].map((level) => (
                   <div key={level} className="flex items-center gap-2 text-xs">
                     <div
                       className={cn(
-                        "w-4 h-4 rounded-full border-2 border-white shadow-sm",
+                        "w-4 h-4 rounded-full border-2 border-white shadow-lg",
                         getRiskColor(level as RiskLevel),
                       )}
                     />
-                    <span className="font-medium">{level}</span>
+                    <span className="font-medium text-white">{level}</span>
                   </div>
                 ))}
-                <div className="border-t pt-2 mt-2">
-                  <div className="text-xs text-muted-foreground">
+                <div className="border-t border-gray-600 pt-2 mt-2">
+                  <div className="text-xs text-gray-300">
                     <div className="flex items-center gap-1 mb-1">
-                      <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+                      <div className="w-3 h-3 bg-blue-600 border border-blue-400 rounded"></div>
                       <span>Water Bodies</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
+                    <div className="flex items-center gap-1 mb-1">
+                      <div className="w-3 h-3 bg-green-700 border border-green-500 rounded"></div>
                       <span>Parks</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 bg-gray-400 border border-gray-300 rounded"></div>
+                      <span>Urban Areas</span>
                     </div>
                   </div>
                 </div>

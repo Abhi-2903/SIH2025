@@ -263,28 +263,69 @@ export function DataManagement() {
       console.log("[v0] CSV content generated, length:", csvContent.length)
 
       try {
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-        const link = document.createElement("a")
-        const url = URL.createObjectURL(blob)
+        const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" })
         const fileName = `heavy_metal_pollution_data_${new Date().toISOString().split("T")[0]}.csv`
 
-        link.setAttribute("href", url)
-        link.setAttribute("download", fileName)
-        link.style.visibility = "hidden"
-        document.body.appendChild(link)
+        // Modern browsers
+        if (window.navigator && (window.navigator as any).msSaveOrOpenBlob) {
+          ;(window.navigator as any).msSaveOrOpenBlob(blob, fileName)
+        } else {
+          const link = document.createElement("a")
+          const url = URL.createObjectURL(blob)
 
-        console.log("[v0] Triggering download for file:", fileName)
-        link.click()
+          link.setAttribute("href", url)
+          link.setAttribute("download", fileName)
+          link.style.visibility = "hidden"
+          link.style.position = "absolute"
+          link.style.left = "-9999px"
 
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url)
+          document.body.appendChild(link)
 
-        // Show success message
-        alert(`✅ Successfully exported ${dataToExport.length} samples to CSV file: ${fileName}`)
-        console.log("[v0] CSV export completed successfully")
+          console.log("[v0] Triggering download for file:", fileName)
+
+          // Force click and cleanup
+          setTimeout(() => {
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+
+            // Show success notification
+            const notification = document.createElement("div")
+            notification.innerHTML = `
+              <div style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-family: system-ui; font-size: 14px;">
+                ✅ CSV file downloaded successfully!<br>
+                <small>${fileName} (${dataToExport.length} samples)</small>
+              </div>
+            `
+            document.body.appendChild(notification)
+
+            setTimeout(() => {
+              if (notification.parentNode) {
+                document.body.removeChild(notification)
+              }
+            }, 4000)
+
+            console.log("[v0] CSV export completed successfully")
+          }, 100)
+        }
       } catch (error) {
         console.error("[v0] CSV export failed:", error)
-        alert("❌ Failed to export CSV file. Please try again.")
+
+        // Show error notification
+        const errorNotification = document.createElement("div")
+        errorNotification.innerHTML = `
+          <div style="position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-family: system-ui; font-size: 14px;">
+            ❌ Failed to download CSV file<br>
+            <small>Please try again or check your browser settings</small>
+          </div>
+        `
+        document.body.appendChild(errorNotification)
+
+        setTimeout(() => {
+          if (errorNotification.parentNode) {
+            document.body.removeChild(errorNotification)
+          }
+        }, 4000)
       }
     } else {
       // Keep existing mock behavior for JSON and Excel
