@@ -29,16 +29,16 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="first-name">First Name</Label>
-              <Input id="first-name" placeholder="Enter your first name" defaultValue="Dr. Sarah" />
+              <Input id="first-name" placeholder="Enter your first name" defaultValue="Dr. Abhimanyu" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="last-name">Last Name</Label>
-              <Input id="last-name" placeholder="Enter your last name" defaultValue="Johnson" />
+              <Input id="last-name" placeholder="Enter your last name" defaultValue="Chachan" />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
-            <Input id="email" type="email" placeholder="Enter your email" defaultValue="sarah.johnson@university.edu" />
+            <Input id="email" type="email" placeholder="Enter your email" defaultValue="235uit012@gbu.ac.in" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="organization">Organization</Label>
